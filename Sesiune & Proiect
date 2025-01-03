@@ -1,0 +1,30 @@
+public class sesiune 
+{
+    
+   public sesiune(string codUnic,string nume)
+   {
+      CodUnic=codUnic;
+      Nume=nume;
+   }
+   
+   public string CodUnic { get; set; }
+   public string Nume { get; set; }
+   public bool EsteDeschisa { get; set; } = true;
+   public List<Student> Participanti { get; set; } = new List<Student>();
+}
+
+
+public class proiect
+{
+    
+     public Proiect(string titlu, string descriere,int nota)
+        {
+            Titlu = titlu;
+            Descriere = descriere;
+            Nota = nota;
+        }
+        
+     public string Titlu { get; set; }
+     public string Descriere { get; set; }
+     public int Nota { get; set; }
+}
