@@ -1,4 +1,4 @@
-using program-poo;
+namespace program-poo;
 
 class program
 {
