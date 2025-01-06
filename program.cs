@@ -104,3 +104,96 @@ class program
                 break;
         }
 }
+    static void AfisareMeniuStudent(Student student)
+    {
+        Console.WriteLine("1.Inscriere la sesiune");
+        Console.WriteLine("2.Predare proiect");
+        Console.WriteLine("3.Vizualizare nota proiect");
+        Console.WriteLine("4.Istoric note proiecte");
+        Console.WriteLine("5.Reclamatie nota proiect");
+        Console.WriteLine("6.Iesire");
+
+        string optiune = Console.ReadLine();
+        switch (optiune)
+        {
+            case "1":
+                student.InscriereLaSesiune(sesiuni);
+                break;
+            case "2":
+                Console.WriteLine("Numele proiectului este:");
+                string titlul = Console.ReadLine();
+                DateTime data = DateTime.Now;
+                student.PredareProiect(titlul, data);
+                break;
+            case "3":
+                Console.WriteLine("Introduceți titlul proiectului:");
+                string titluNota = Console.ReadLine();
+                student.VizualizareNota(titluNota);
+                break;
+            case "4":
+                student.Istoric();
+                break;
+            case "5":
+                Console.WriteLine("Introduceți titlul proiectului:");
+                string titluReclamatie = Console.ReadLine();
+                Console.WriteLine("Introduceți detaliile reclamației:");
+                string detalii = Console.ReadLine();
+                student.ReclamatieNota(titluReclamatie, detalii);
+                break;
+            case "6":
+                utilizatorLogat = null;
+                break;
+            default:
+                Console.WriteLine("Optiunea nu este valabila");
+                break;
+        }
+    }
+
+    static void Logare()
+    {
+        Console.WriteLine("Introduceti email-ul: ");
+        string email = Console.ReadLine();
+        Console.WriteLine("Introduceti parola:");
+        string parola = Console.ReadLine();
+        var utilizator = utilizatori.Find(u => u.Email == email && u.Parola == parola);
+        if (utilizator != null)
+        {
+            utilizatorLogat = utilizator;
+            Console.WriteLine($"Bine ati venit {utilizator.NumePers}!");
+
+        }
+        else
+        {
+            Console.WriteLine("Datele nu sunt corecte");
+        }
+    }
+
+    static void AdaugareUtilizator()
+    {
+        Console.WriteLine("Tip utilizator (1-profesor,2-strudent)");
+        string tip = Console.ReadLine();
+        Console.WriteLine("Introduceti numarul matricol: ");
+        string numarmatricol = Console.ReadLine();
+        Console.WriteLine("Introduceti numele persoanei: ");
+        string numepersoana = Console.ReadLine();
+        Console.WriteLine("Introduceti email-ul: ");
+        string email = Console.ReadLine();
+        Console.WriteLine("Introduceți parola:");
+        string parola = Console.ReadLine();
+        if (tip == "1")
+        {
+            utilizatori.Add(new Profesor(email, numarmatricol, numepersoana, parola));
+            Console.WriteLine("Profesor adaugat cu succes");
+
+        }
+        else if (tip == "2")
+        {
+            utilizatori.Add(new Student(email, numarmatricol, numepersoana, parola));
+            Console.WriteLine("Student adaugat cu succes");
+        }
+        else
+        {
+            Console.WriteLine("Tip invalid");
+
+        }
+    }
