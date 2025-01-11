@@ -1,0 +1,33 @@
+{
+  "Utilizatori": [
+    {
+      "Email": "profesor@exemplu.com",
+      "NumarMatricol": "P001",
+      "NumePers": "Profesor Test",
+      "Parola": "parola123",
+      "Tip": "Profesor"
+    },
+    {
+      "Email": "student@exemplu.com",
+      "NumarMatricol": "S001",
+      "NumePers": "Student Test",
+      "Parola": "parola456",
+      "Tip": "Student"
+    },
+    {
+      "Email": "student@exemplu.com",
+      "NumarMatricol": "S003",
+      "NumePers": "Student Test",
+      "Parola": "parola446",
+      "Tip": "Student"
+    }
+    
+  ],
+  "Sesiuni": [
+    {
+      "CodUnic": "SES01",
+      "Nume": "Sesiunea Proiect 1",
+      "EsteDeschisa": true
+    }
+  ]
+}
