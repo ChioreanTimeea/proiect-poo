@@ -1,56 +1,80 @@
-namespace program-poo;
+namespace proiect_poo;
+using System.IO;
+using System.Text.Json;
 
-class program
+class Program
 {
-    static List<utilizator> utilizatori = new List<utilizator>();
+    static List<Utilizator> utilizatori = new List<Utilizator>();
     static List<sesiune> sesiuni = new List<sesiune>();
-    static utilizator utilizatorLogat = null;
-    
-      static void Main(string[] args)
+    static Utilizator utilizatorLogat = null;
+    private static string filepath = "date.json";
+
+    static void Main(string[] args)
+    {
+        while (true)
         {
-            while (true)
+            if (utilizatorLogat == null)
             {
-                if (utilizatorLogat == null)
-                {
-                    AfisareMeniuNeautentificat();
-                }
-                else
-                {
-                    if (utilizatorLogat is Profesor)
-                        AfisareMeniuProfesor((Profesor)utilizatorLogat);
-                    else if (utilizatorLogat is Student)
-                        AfisareMeniuStudent((Student)utilizatorLogat);
-                }
+                AfisareMeniuNeautentificat();
+            }
+            else
+            {
+                if (utilizatorLogat is Profesor)
+                    AfisareMeniuProfesor((Profesor)utilizatorLogat);
+                else if (utilizatorLogat is Student)
+                    AfisareMeniuStudent((Student)utilizatorLogat);
             }
         }
 
-        static void AfisareMeniuNeautentificat()
-        {
-            Console.WriteLine("1. Logare");
-            Console.WriteLine("2. Adăugare utilizator");
-            Console.WriteLine("3. Ieșire");
-            string optiune = Console.ReadLine();
+        string filePath = "stare_aplicatie.json";
+        IncarcaDate(filePath);
 
-            switch (optiune)
+        while (true)
+        {
+            if (utilizatorLogat == null)
             {
-                case "1":
-                    Logare();
-                    break;
-                case "2":
-                    AdaugareUtilizator();
-                    break;
-                case "3":
-                    Environment.Exit(0);
-                    break;
-                default:
-                    Console.WriteLine("Opțiune invalidă!");
-                    break;
+                AfisareMeniuNeautentificat();
+            }
+            else
+            {
+                if (utilizatorLogat is Profesor)
+                    AfisareMeniuProfesor((Profesor)utilizatorLogat);
+                else if (utilizatorLogat is Student)
+                    AfisareMeniuStudent((Student)utilizatorLogat);
             }
         }
 
-        static void AfisareMeniuProfesor(Profesor profesor)
+        SalveazaDate(filePath);
+
+    }
+
+    static void AfisareMeniuNeautentificat()
+    {
+        Console.WriteLine("1. Logare");
+        Console.WriteLine("2. Adăugare utilizator");
+        Console.WriteLine("3. Iesire");
+        string optiune = Console.ReadLine();
+
+        switch (optiune)
         {
-                  Console.WriteLine("1. Deschidere sesiune");
+            case "1":
+                Logare();
+                break;
+            case "2":
+                AdaugareUtilizator();
+                break;
+            case "3":
+                Environment.Exit(0);
+                break;
+            default:
+                Console.WriteLine("Opțiune invalidă!");
+                break;
+        }
+    }
+
+    static void AfisareMeniuProfesor(Profesor profesor)
+    {
+        Console.WriteLine("1. Deschidere sesiune");
         Console.WriteLine("2. Închidere sesiune");
         Console.WriteLine("3.Vizualizare lista proiecte studentii");
         Console.WriteLine("4.Notare proiect");
@@ -103,7 +127,9 @@ class program
                 Console.WriteLine("Optiunea nu este valabila");
                 break;
         }
-}
+
+    }
+
     static void AfisareMeniuStudent(Student student)
     {
         Console.WriteLine("1.Inscriere la sesiune");
@@ -197,3 +223,65 @@ class program
 
         }
     }
+
+  
+    public static void IncarcaDate(string filePath)
+    {
+        try
+        {
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine("Fișierul specificat nu există. Se va porni cu date noi.");
+                return;
+            }
+
+            string json = File.ReadAllText(filePath);
+            var date = JsonSerializer.Deserialize<dynamic>(json);
+
+            utilizatori = JsonSerializer.Deserialize<List<Utilizator>>(date["Utilizatori"].ToString());
+            sesiuni = JsonSerializer.Deserialize<List<sesiune>>(date["Sesiuni"].ToString());
+
+            Console.WriteLine("Datele au fost încărcate cu succes.");
+        }
+        catch (JsonException ex)
+        {
+            Console.WriteLine($"Eroare la procesarea fișierului JSON: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Eroare la încărcarea datelor: {ex.Message}");
+        }
+    }
+
+    public static void SalveazaDate(string filePath)
+    {
+        try
+        {
+            var date = new
+            {
+                Utilizatori = utilizatori,
+                Sesiuni = sesiuni
+            };
+
+            string json = JsonSerializer.Serialize(date, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(filePath, json);
+
+            Console.WriteLine("Datele au fost salvate cu succes.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Eroare la salvarea datelor: {ex.Message}");
+        }
+    }
+}
+         
+     
+    
+    
+
+
+
+            
+
+
+
