@@ -1,16 +1,16 @@
 namespace proiect_poo;
 using System.IO;
 using System.Text.Json;
-
+using System.Text.RegularExpressions; 
+ 
 class Program
 {
     static List<Utilizator> utilizatori = new List<Utilizator>();
     static List<sesiune> sesiuni = new List<sesiune>();
     static Utilizator utilizatorLogat = null;
     private static string filepath = "date.json";
-
     static void Main(string[] args)
-    {
+    {  IncarcaDate(filepath);
         while (true)
         {
             if (utilizatorLogat == null)
@@ -26,28 +26,10 @@ class Program
             }
         }
 
-        string filePath = "stare_aplicatie.json";
-        IncarcaDate(filePath);
-
-        while (true)
-        {
-            if (utilizatorLogat == null)
-            {
-                AfisareMeniuNeautentificat();
-            }
-            else
-            {
-                if (utilizatorLogat is Profesor)
-                    AfisareMeniuProfesor((Profesor)utilizatorLogat);
-                else if (utilizatorLogat is Student)
-                    AfisareMeniuStudent((Student)utilizatorLogat);
-            }
-        }
-
-        SalveazaDate(filePath);
+        SalveazaDate(filepath);
 
     }
-
+  
     static void AfisareMeniuNeautentificat()
     {
         Console.WriteLine("1. Logare");
