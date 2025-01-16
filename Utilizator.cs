@@ -1,10 +1,13 @@
-using System;
+
 using System.Text.RegularExpressions;
+using System.Text.Json.Serialization;
 
 namespace proiect_poo;
 
+[JsonConverter(typeof(UtilizatorConverter))]
 public abstract class Utilizator
 {
+    public Utilizator() { }
     public Utilizator(string email, string nrMatricol, string numePers, string parola)
     {
         Email = email;
@@ -17,7 +20,7 @@ public abstract class Utilizator
     public string NrMatricol { get; }
     public string NumePers { get; private set; }
     public string Parola { get; }
-
+    
     
     public void SetNumePers(string nume)
     {
