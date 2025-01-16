@@ -1,13 +1,13 @@
-
-        
 using System.Globalization;
 using System.Reflection.Metadata;
+using System.Text.Json.Serialization;
 
 namespace proiect_poo;
 
 public class Profesor : Utilizator
 
-{
+{ public Profesor () {}
+
     public Profesor(string email, string nrMatricol, string numePers, string parola) :
         base(email, nrMatricol, numePers, parola)
     {
@@ -110,10 +110,6 @@ public class Profesor : Utilizator
     
 }
     
-    
-
-
-
     
 
 
