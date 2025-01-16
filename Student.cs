@@ -1,10 +1,15 @@
-namespace proiect_poo;
+
+using System.Text.Json.Serialization;
+
+namespace proiect_poo; 
+
 
 public class Student : Utilizator
 {
     public List<proiect> Proiecte { get; set; } = new List<proiect>();
     public List<reclamatie> Reclamatii { get; set; } = new List<reclamatie>();
-
+    
+   public Student () {}
     public Student(string email, string nrMatricol, string numePers, string parola) :
         base(email, nrMatricol, numePers, parola)
     {
