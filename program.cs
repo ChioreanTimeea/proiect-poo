@@ -1,16 +1,17 @@
 namespace proiect_poo;
 using System.IO;
 using System.Text.Json;
-using System.Text.RegularExpressions; 
- 
+using System.Text.RegularExpressions;
+
 class Program
 {
     static List<Utilizator> utilizatori = new List<Utilizator>();
     static List<sesiune> sesiuni = new List<sesiune>();
     static Utilizator utilizatorLogat = null;
     private static string filepath = "date.json";
+
     static void Main(string[] args)
-    {  IncarcaDate(filepath);
+    {
         while (true)
         {
             if (utilizatorLogat == null)
@@ -26,10 +27,9 @@ class Program
             }
         }
 
-        SalveazaDate(filepath);
-
     }
-  
+
+
     static void AfisareMeniuNeautentificat()
     {
         Console.WriteLine("1. Logare");
@@ -147,7 +147,9 @@ class Program
                 Console.WriteLine("Introduceți detaliile reclamației:");
                 string detalii = Console.ReadLine();
                 student.ReclamatieNota(titluReclamatie, detalii);
+                SalveazaDate(filepath);
                 break;
+
             case "6":
                 utilizatorLogat = null;
                 break;
@@ -178,7 +180,7 @@ class Program
 
     static void AdaugareUtilizator()
     {
-        Console.WriteLine("Tip utilizator (1-profesor,2-strudent)");
+        Console.WriteLine("Tip utilizator (1-profesor,2-student)");
         string tip = Console.ReadLine();
         Console.WriteLine("Introduceti numarul matricol: ");
         string numarmatricol = Console.ReadLine();
@@ -190,14 +192,18 @@ class Program
         string parola = Console.ReadLine();
         if (tip == "1")
         {
+            IncarcaDate(filepath);
             utilizatori.Add(new Profesor(email, numarmatricol, numepersoana, parola));
             Console.WriteLine("Profesor adaugat cu succes");
+            SalveazaDate(filepath);
 
         }
         else if (tip == "2")
         {
+            IncarcaDate(filepath);
             utilizatori.Add(new Student(email, numarmatricol, numepersoana, parola));
             Console.WriteLine("Student adaugat cu succes");
+            SalveazaDate(filepath);
         }
         else
         {
@@ -206,33 +212,84 @@ class Program
         }
     }
 
-  
     public static void IncarcaDate(string filePath)
     {
+
+
+        if (!File.Exists(filePath))
+        {
+            Console.WriteLine("Fișierul specificat nu există. Se va porni cu date noi.");
+            utilizatori = new List<Utilizator>();
+            sesiuni = new List<sesiune>();
+            return;
+        }
+
         try
         {
-            if (!File.Exists(filePath))
+            string json = File.ReadAllText(filePath);
+            if (string.IsNullOrWhiteSpace(json))
             {
-                Console.WriteLine("Fișierul specificat nu există. Se va porni cu date noi.");
+                Console.WriteLine("Fișierul JSON este gol. Se va porni cu date noi.");
+                utilizatori = new List<Utilizator>();
+                sesiuni = new List<sesiune>();
                 return;
             }
 
-            string json = File.ReadAllText(filePath);
-            var date = JsonSerializer.Deserialize<dynamic>(json);
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new UtilizatorConverter() },
+                PropertyNameCaseInsensitive = true,
+                WriteIndented = true
+            };
+            var date = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json, options);
+            if (date == null)
+            {
+                Console.WriteLine("Structura fișierului JSON nu este validă. Se va porni cu date noi.");
+                utilizatori = new List<Utilizator>();
+                sesiuni = new List<sesiune>();
+                if (date.ContainsKey("Utilizatori"))
+                {
+                    utilizatori =
+                        JsonSerializer.Deserialize<List<Utilizator>>(date["Utilizatori"].GetRawText(), options) ??
+                        new List<Utilizator>();
+                }
+                else
+                {
+                    utilizatori = new List<Utilizator>();
+                    Console.WriteLine("Cheia 'Utilizatori' nu a fost găsită în fișier.");
+                }
 
-            utilizatori = JsonSerializer.Deserialize<List<Utilizator>>(date["Utilizatori"].ToString());
-            sesiuni = JsonSerializer.Deserialize<List<sesiune>>(date["Sesiuni"].ToString());
+                if (date.ContainsKey("Sesiuni"))
+                {
+                    sesiuni = JsonSerializer.Deserialize<List<sesiune>>(date["Sesiuni"].GetRawText(), options) ??
+                              new List<sesiune>();
+                }
+                else
+                {
+                    sesiuni = new List<sesiune>();
+                    Console.WriteLine("Cheia 'Sesiuni' nu a fost găsită în fișier.");
+                }
+            }
 
             Console.WriteLine("Datele au fost încărcate cu succes.");
         }
+
         catch (JsonException ex)
         {
+
             Console.WriteLine($"Eroare la procesarea fișierului JSON: {ex.Message}");
+            utilizatori = new List<Utilizator>();
+            sesiuni = new List<sesiune>();
         }
         catch (Exception ex)
         {
+
             Console.WriteLine($"Eroare la încărcarea datelor: {ex.Message}");
+            utilizatori = new List<Utilizator>();
+            sesiuni = new List<sesiune>();
         }
+
+
     }
 
     public static void SalveazaDate(string filePath)
@@ -256,6 +313,7 @@ class Program
         }
     }
 }
+
          
      
     
